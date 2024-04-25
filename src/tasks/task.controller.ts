@@ -7,10 +7,13 @@ import {
   Put,
   Delete,
   Inject,
+  Query,
 } from '@nestjs/common';
 import { Task } from './task.entity';
 import { ITaskService } from './task.interface';
+import { ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 
+@ApiTags('tasks')
 @Controller('tasks')
 export class TaskController {
   constructor(
@@ -25,6 +28,34 @@ export class TaskController {
   @Get()
   async getAllTasks(): Promise<Task[]> {
     return this.taskService.getAllTasks();
+  }
+
+  @Get('near')
+  @ApiQuery({
+    name: 'latitude',
+    required: true,
+    description: 'Latitude of the location',
+  })
+  @ApiQuery({
+    name: 'longitude',
+    required: true,
+    description: 'Longitude of the location',
+  })
+  @ApiQuery({
+    name: 'radius',
+    required: true,
+    description: 'Search radius in meters',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Retrieve tasks near the specified location',
+  })
+  async getTasksNearLocation(
+    @Query('latitude') latitude: number,
+    @Query('longitude') longitude: number,
+    @Query('radius') radius: number,
+  ): Promise<Task[]> {
+    return this.taskService.getTasksNearLocation(latitude, longitude, radius);
   }
 
   @Get(':id')

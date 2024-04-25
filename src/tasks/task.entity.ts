@@ -8,5 +8,5 @@ export class Task {
   description: string;
 
   @ApiProperty()
-  location: string;
+  location: { latitude: number; longitude: number };
 }

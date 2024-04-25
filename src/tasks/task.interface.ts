@@ -6,4 +6,9 @@ export interface ITaskService {
   getTaskById(id: string): Promise<Task>;
   updateTask(id: string, task: Task): Promise<Task>;
   deleteTask(id: string): Promise<void>;
+  getTasksNearLocation(
+    latitude: number,
+    longitude: number,
+    radius: number,
+  ): Promise<Task[]>;
 }

@@ -2,6 +2,8 @@ import { Injectable } from '@nestjs/common';
 import * as admin from 'firebase-admin';
 import { Task } from './task.entity';
 import { ITaskService } from './task.interface';
+import { calculateDistance } from 'src/utils/distance';
+import { EARTH_RADIUS_KM } from 'src/constants/tasks.constants';
 
 @Injectable()
 export class TaskService implements ITaskService {
@@ -18,6 +20,46 @@ export class TaskService implements ITaskService {
       id: doc.id,
       ...(doc.data() as Task),
     }));
+  }
+
+  async getTasksNearLocation(
+    latitude: number,
+    longitude: number,
+    radius: number,
+  ): Promise<Task[]> {
+    const allTasks = await this.getAllTasks();
+    const nearTasks = this.filterTasksNearLocation(
+      allTasks,
+      latitude,
+      longitude,
+      radius,
+    );
+    return nearTasks;
+  }
+
+  private filterTasksNearLocation(
+    tasks: Task[],
+    latitude: number,
+    longitude: number,
+    radius: number,
+  ): Task[] {
+    const nearTasks: Task[] = [];
+    const earthRadiusKm = EARTH_RADIUS_KM; // Radius of the Earth in kilometers
+
+    tasks.forEach((task) => {
+      const distance = calculateDistance(
+        task.location.latitude,
+        task.location.longitude,
+        latitude,
+        longitude,
+        earthRadiusKm,
+      );
+      if (distance <= radius) {
+        nearTasks.push(task);
+      }
+    });
+
+    return nearTasks;
   }
 
   async getTaskById(id: string): Promise<Task> {
