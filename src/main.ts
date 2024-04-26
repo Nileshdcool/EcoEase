@@ -4,7 +4,9 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 var admin = require('firebase-admin');
 
-var serviceAccount = require('../serviceAccountKey.json');
+const serviceAccount = JSON.parse(
+  process.env.FIREBASE_SERVICE_ACCOUNT_KEY as string
+);
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),

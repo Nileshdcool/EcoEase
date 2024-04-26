@@ -8,19 +8,11 @@ import {
   Delete,
   Inject,
   Query,
-  UseGuards,
 } from '@nestjs/common';
 import { Task } from './task.entity';
 import { ITaskService } from './task.interface';
-import {
-  ApiBearerAuth,
-  ApiOperation,
-  ApiParam,
-  ApiQuery,
-  ApiResponse,
-  ApiTags,
-} from '@nestjs/swagger';
-import { authMiddleware } from '../middleware/auth.middleware';
+import { ApiTags } from '@nestjs/swagger';
+import { AuthenticatedApiOperation } from 'src/factories/secured-api-decorators';
 
 @ApiTags('tasks')
 @Controller('tasks')
@@ -30,46 +22,44 @@ export class TaskController {
   ) {}
 
   @Post()
-  @UseGuards(authMiddleware)
-  @ApiBearerAuth()
-  @ApiOperation({ summary: 'Create a Task' })
-  @ApiResponse({ status: 200, description: 'Return a created Task' })
+  @AuthenticatedApiOperation(
+    'Create a Task',
+    'Return a created Task',
+    [],
+    [],
+  )
   async createTask(@Body() task: Task): Promise<Task> {
     return this.taskService.createTask(task);
   }
 
   @Get()
-  @UseGuards(authMiddleware)
-  @ApiBearerAuth()
-  @ApiOperation({ summary: 'Get all Tasks' })
-  @ApiResponse({ status: 200, description: 'Returns an array of tasks.' })
+  @AuthenticatedApiOperation('Get all Tasks', 'Returns an array of tasks.')
   async getAllTasks(): Promise<Task[]> {
     return this.taskService.getAllTasks();
   }
 
   @Get('near-location')
-  @UseGuards(authMiddleware)
-  @ApiBearerAuth()
-  @ApiOperation({ summary: 'Get tasks near location' })
-  @ApiQuery({
-    name: 'latitude',
-    description: 'Latitude of the location',
-    type: 'number',
-  })
-  @ApiQuery({
-    name: 'longitude',
-    description: 'Longitude of the location',
-    type: 'number',
-  })
-  @ApiQuery({
-    name: 'radius',
-    description: 'Search radius in meters',
-    type: 'number',
-  })
-  @ApiResponse({
-    status: 200,
-    description: 'Returns tasks near the specified location.',
-  })
+  @AuthenticatedApiOperation(
+    'Get tasks near location',
+    'Returns tasks near the specified location.',
+    [
+      {
+        name: 'latitude',
+        description: 'Latitude of the location',
+        type: 'number',
+      },
+      {
+        name: 'longitude',
+        description: 'Longitude of the location',
+        type: 'number',
+      },
+      {
+        name: 'radius',
+        description: 'Search radius in meters',
+        type: 'number',
+      },
+    ],
+  )
   async getTasksNearLocation(
     @Query('latitude') latitude: number,
     @Query('longitude') longitude: number,
@@ -79,34 +69,34 @@ export class TaskController {
   }
 
   @Get(':id')
-  @UseGuards(authMiddleware)
-  @ApiBearerAuth()
-  @ApiOperation({ summary: 'Get task by ID' })
-  @ApiParam({ name: 'id', description: 'ID of the task' })
-  @ApiResponse({ status: 200, description: 'Returns the task.' })
+  @AuthenticatedApiOperation(
+    'Get task by ID',
+    'Returns the task.',
+    [],
+    [{ name: 'id', description: 'ID of the task' }],
+  )
   async getTaskById(@Param('id') id: string): Promise<Task> {
     return this.taskService.getTaskById(id);
   }
 
   @Put(':id')
-  @UseGuards(authMiddleware)
-  @ApiBearerAuth()
-  @ApiOperation({ summary: 'Update a task' })
-  @ApiParam({ name: 'id', description: 'ID of the task' })
-  @ApiResponse({ status: 200, description: 'Returns the updated task.' })
+  @AuthenticatedApiOperation(
+    'Update a task by ID',
+    'Returns the updated task.',
+    [],
+    [{ name: 'id', description: 'ID of the task' }],
+  )
   async updateTask(@Param('id') id: string, @Body() task: Task): Promise<Task> {
     return this.taskService.updateTask(id, task);
   }
 
   @Delete(':id')
-  @UseGuards(authMiddleware)
-  @ApiBearerAuth()
-  @ApiOperation({ summary: 'Delete a task' })
-  @ApiParam({ name: 'id', description: 'ID of the task' })
-  @ApiResponse({
-    status: 204,
-    description: 'Task has been successfully deleted.',
-  })
+  @AuthenticatedApiOperation(
+    'Delete a task',
+    'Task has been successfully deleted.',
+    [],
+    [{ name: 'id', description: 'ID of the task' }],
+  )
   async deleteTask(@Param('id') id: string): Promise<void> {
     return this.taskService.deleteTask(id);
   }
