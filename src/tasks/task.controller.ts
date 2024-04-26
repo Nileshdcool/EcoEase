@@ -37,7 +37,7 @@ import {
   PUT_PARAM_NAME,
   PUT_SUMMARY,
 } from '../constants/swagger.constants';
-import { LATITUDE, LONGITUDE, RADIUS } from 'src/constants/tasks.constants';
+import { LATITUDE, LONGITUDE, RADIUS } from '../constants/tasks.constants';
 import { handleSuccess } from '../helpers/api-response-handler';
 
 @ApiTags('tasks')
