@@ -26,6 +26,7 @@ async function bootstrap() {
       workers to contribute to cleaner and healthier urban environments.`,
     )
     .setVersion('1.0')
+    .addBearerAuth()
     .build();
 
   const document = SwaggerModule.createDocument(app, options);
