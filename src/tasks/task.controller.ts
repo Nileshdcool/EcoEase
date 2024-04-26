@@ -20,7 +20,7 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
-import { AuthGuard } from '@nestjs/passport';
+import { authMiddleware } from 'src/middleware/auth.middleware';
 
 @ApiTags('tasks')
 @Controller('tasks')
@@ -30,7 +30,7 @@ export class TaskController {
   ) {}
 
   @Post()
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(authMiddleware)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Create a Task' })
   @ApiResponse({ status: 200, description: 'Return a created Task' })
@@ -39,7 +39,7 @@ export class TaskController {
   }
 
   @Get()
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(authMiddleware)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Get all Tasks' })
   @ApiResponse({ status: 200, description: 'Returns an array of tasks.' })
@@ -48,7 +48,7 @@ export class TaskController {
   }
 
   @Get('near-location')
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(authMiddleware)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Get tasks near location' })
   @ApiQuery({
@@ -79,7 +79,7 @@ export class TaskController {
   }
 
   @Get(':id')
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(authMiddleware)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Get task by ID' })
   @ApiParam({ name: 'id', description: 'ID of the task' })
@@ -89,7 +89,7 @@ export class TaskController {
   }
 
   @Put(':id')
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(authMiddleware)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Update a task' })
   @ApiParam({ name: 'id', description: 'ID of the task' })
@@ -99,7 +99,7 @@ export class TaskController {
   }
 
   @Delete(':id')
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(authMiddleware)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Delete a task' })
   @ApiParam({ name: 'id', description: 'ID of the task' })
