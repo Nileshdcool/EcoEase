@@ -40,12 +40,12 @@ describe('TaskController', () => {
   it('should create a task', async () => {
     const newTask: Task = {
       id: 'GHAQ0001',
-      description: 'location1 garbage',
+      description: 'location1',
       location: { latitude: 13.1, longitude: -13.1 },
     };
     const createdTask: Task = {
       id: 'GHAQ0001',
-      description: 'location1 garbage',
+      description: 'location1',
       location: { latitude: 13.1, longitude: -13.1 },
     };
     jest.spyOn(taskService, 'createTask').mockResolvedValue(createdTask);

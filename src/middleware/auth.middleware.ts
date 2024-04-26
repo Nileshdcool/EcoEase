@@ -1,10 +1,11 @@
 import { Injectable, CanActivate, ExecutionContext } from '@nestjs/common';
+import { AUTH_REQUEST_HEADER, BEARER } from '../constants/auth.constants';
 
 @Injectable()
 export class authMiddleware implements CanActivate {
   canActivate(context: ExecutionContext): boolean {
     const request = context.switchToHttp().getRequest();
-    const authHeader = request.headers['authorization'];
+    const authHeader = request.headers[AUTH_REQUEST_HEADER];
 
     if (!authHeader) {
       return false;
@@ -12,11 +13,11 @@ export class authMiddleware implements CanActivate {
 
     const [bearer, token] = authHeader.split(' ');
 
-    if (bearer !== 'Bearer' || !token) {
+    if (bearer !== BEARER || !token) {
       return false;
     }
 
-    if (token === 'secretkey') {
+    if (token === process.env.AUTH_KEY) {
       return true;
     } else {
       return false;

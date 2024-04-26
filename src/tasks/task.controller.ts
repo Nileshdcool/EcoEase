@@ -12,7 +12,29 @@ import {
 import { Task } from './task.entity';
 import { ITaskService } from './task.interface';
 import { ApiTags } from '@nestjs/swagger';
-import { AuthenticatedApiOperation } from 'src/factories/secured-api-decorators';
+import { AuthenticatedApiOperation } from '../factories/secured-api-decorators';
+import {
+  CREATE_TASK,
+  GET_ALL_TASKS,
+  GET_TASKS_NEAR_LOCATION,
+  NEAR_LOCATION_API,
+  NEAR_LOCATION_QUERY_STRING,
+  RETURN_CREATED_TASK,
+  RETURN_OF_TASKS,
+  RETURN_TASKS_NEAR_LOCATION,
+  GET_TASK_BY_ID_DESCRIPTION,
+  GET_TASK_BY_ID_PARAM_DESCRIPTION,
+  GET_TASK_BY_ID_PARAM_NAME,
+  GET_TASK_BY_ID_SUMMARY,
+  PUT_DESCRIPTION,
+  DELETE_DESCRIPTION,
+  DELETE_PARAM_DESCRIPTION,
+  DELETE_PARAM_NAME,
+  DELETE_SUMMARY,
+  PUT_PARAM_DESCRIPTION,
+  PUT_PARAM_NAME,
+  PUT_SUMMARY,
+} from '../constants/swagger.constants';
 
 @ApiTags('tasks')
 @Controller('tasks')
@@ -22,43 +44,22 @@ export class TaskController {
   ) {}
 
   @Post()
-  @AuthenticatedApiOperation(
-    'Create a Task',
-    'Return a created Task',
-    [],
-    [],
-  )
+  @AuthenticatedApiOperation(CREATE_TASK, RETURN_CREATED_TASK, [], [])
   async createTask(@Body() task: Task): Promise<Task> {
     return this.taskService.createTask(task);
   }
 
   @Get()
-  @AuthenticatedApiOperation('Get all Tasks', 'Returns an array of tasks.')
+  @AuthenticatedApiOperation(GET_ALL_TASKS, RETURN_OF_TASKS)
   async getAllTasks(): Promise<Task[]> {
     return this.taskService.getAllTasks();
   }
 
-  @Get('near-location')
+  @Get(NEAR_LOCATION_API)
   @AuthenticatedApiOperation(
-    'Get tasks near location',
-    'Returns tasks near the specified location.',
-    [
-      {
-        name: 'latitude',
-        description: 'Latitude of the location',
-        type: 'number',
-      },
-      {
-        name: 'longitude',
-        description: 'Longitude of the location',
-        type: 'number',
-      },
-      {
-        name: 'radius',
-        description: 'Search radius in meters',
-        type: 'number',
-      },
-    ],
+    GET_TASKS_NEAR_LOCATION,
+    RETURN_TASKS_NEAR_LOCATION,
+    NEAR_LOCATION_QUERY_STRING,
   )
   async getTasksNearLocation(
     @Query('latitude') latitude: number,
@@ -70,34 +71,44 @@ export class TaskController {
 
   @Get(':id')
   @AuthenticatedApiOperation(
-    'Get task by ID',
-    'Returns the task.',
+    GET_TASK_BY_ID_DESCRIPTION,
+    GET_TASK_BY_ID_SUMMARY,
     [],
-    [{ name: 'id', description: 'ID of the task' }],
+    [
+      {
+        name: GET_TASK_BY_ID_PARAM_NAME,
+        description: GET_TASK_BY_ID_PARAM_DESCRIPTION,
+      },
+    ],
   )
-  async getTaskById(@Param('id') id: string): Promise<Task> {
+  async getTaskById(
+    @Param(GET_TASK_BY_ID_PARAM_NAME) id: string,
+  ): Promise<Task> {
     return this.taskService.getTaskById(id);
   }
 
   @Put(':id')
   @AuthenticatedApiOperation(
-    'Update a task by ID',
-    'Returns the updated task.',
+    PUT_DESCRIPTION,
+    PUT_SUMMARY,
     [],
-    [{ name: 'id', description: 'ID of the task' }],
+    [{ name: PUT_PARAM_NAME, description: PUT_PARAM_DESCRIPTION }],
   )
-  async updateTask(@Param('id') id: string, @Body() task: Task): Promise<Task> {
+  async updateTask(
+    @Param(PUT_PARAM_NAME) id: string,
+    @Body() task: Task,
+  ): Promise<Task> {
     return this.taskService.updateTask(id, task);
   }
 
   @Delete(':id')
   @AuthenticatedApiOperation(
-    'Delete a task',
-    'Task has been successfully deleted.',
+    DELETE_DESCRIPTION,
+    DELETE_SUMMARY,
     [],
-    [{ name: 'id', description: 'ID of the task' }],
+    [{ name: DELETE_PARAM_NAME, description: DELETE_PARAM_DESCRIPTION }],
   )
-  async deleteTask(@Param('id') id: string): Promise<void> {
+  async deleteTask(@Param(DELETE_PARAM_NAME) id: string): Promise<void> {
     return this.taskService.deleteTask(id);
   }
 }
