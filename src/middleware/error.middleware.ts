@@ -5,26 +5,18 @@ import {
   HttpException,
   HttpStatus,
 } from '@nestjs/common';
-import { Request, Response } from 'express';
+import { Response } from 'express';
 import * as Sentry from '@sentry/node';
+import { handleError } from '../helpers/api-response-handler';
 
 @Catch(HttpException)
 export class HttpExceptionFilter implements ExceptionFilter {
   catch(exception: HttpException, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<Response>();
-    const request = ctx.getRequest<Request>();
     const status = exception.getStatus();
-    
-    const errorObject = {
-      statusCode: status,
-      timestamp: new Date().toISOString(),
-      path: request.url,
-      message: exception.message,
-    };
-    
-    response.status(status).json(errorObject);
-    Sentry.captureException(errorObject);
+    Sentry.captureException(exception);
+    handleError(response, exception.message, status);
   }
 }
 

@@ -47,18 +47,18 @@ export class TaskController {
     @Inject('TaskService') private readonly taskService: ITaskService,
   ) {}
 
-  @Post()
-  @AuthenticatedApiOperation(CREATE_TASK, RETURN_CREATED_TASK, [], [])
-  async createTask(@Res() res: Response, @Body() task: Task) {
-    const data = await this.taskService.createTask(task);
-    return handleSuccess<Task>(res, 'Success message', data);
-  }
-
   @Get()
   @AuthenticatedApiOperation(GET_ALL_TASKS, RETURN_OF_TASKS)
   async getAllTasks(@Res() res: Response) {
     const data = await this.taskService.getAllTasks();
-    return handleSuccess<Task[]>(res, 'Success message', data);
+    return handleSuccess<Task[]>(res, 'Tasks retrieved successfully', data);
+  }
+
+  @Post()
+  @AuthenticatedApiOperation(CREATE_TASK, RETURN_CREATED_TASK, [], [])
+  async createTask(@Res() res: Response, @Body() task: Task) {
+    const data = await this.taskService.createTask(task);
+    return handleSuccess<Task>(res, 'Task created successfully', data);
   }
 
   @Get(NEAR_LOCATION_API)
@@ -78,7 +78,7 @@ export class TaskController {
       longitude,
       radius,
     );
-    return handleSuccess<Task[]>(res, 'Success message', data);
+    return handleSuccess<Task[]>(res, 'Tasks retrieved successfully', data);
   }
 
   @Get(':id')
@@ -98,7 +98,7 @@ export class TaskController {
     @Param(GET_TASK_BY_ID_PARAM_NAME) id: string,
   ) {
     const data = await this.taskService.getTaskById(id);
-    return handleSuccess<Task>(res, 'Success message', data);
+    return handleSuccess<Task>(res, 'Task retrieved successfully', data);
   }
 
   @Put(':id')
@@ -114,7 +114,7 @@ export class TaskController {
     @Body() task: Task,
   ) {
     const data = await this.taskService.updateTask(id, task);
-    return handleSuccess<Task>(res, 'Success message', data);
+    return handleSuccess<Task>(res, 'Task updated successfully', data);
   }
 
   @Delete(':id')
@@ -126,6 +126,6 @@ export class TaskController {
   )
   async deleteTask(@Res() res: Response, @Param(DELETE_PARAM_NAME) id: string) {
     await this.taskService.deleteTask(id);
-    return handleSuccess<Task>(res, 'Success message', null);
+    return handleSuccess<Task>(res, 'Tasks deleted successfully', null);
   }
 }
