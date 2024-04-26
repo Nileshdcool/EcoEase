@@ -14,6 +14,17 @@ export const NEAR_LOCATION_API = 'near-location';
 export const GET_TASKS_NEAR_LOCATION = 'Get tasks near location';
 export const RETURN_TASKS_NEAR_LOCATION = 'Returns tasks near the specified location.';
 
+export const SWAGGER_DOC_TITLE = 'EcoEase Street Cleaning API';
+
+export const SEAGGER_DOC_DESCIPTION= `This API provides endpoints to manage tasks 
+for inner-city street cleaning, leveraging innovative 
+solutions to tackle urban trash accumulation. 
+Partnered with a food delivery company, EcoEase utilizes 
+camera-equipped delivery riders to identify areas with high 
+garbage concentration, allowing efficient assignment of cleaning tasks. 
+This API facilitates task creation, display, and editing, empowering 
+workers to contribute to cleaner and healthier urban environments.`
+
 export const NEAR_LOCATION_QUERY_STRING = [
     {
       name: 'latitude',

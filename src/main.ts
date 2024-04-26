@@ -1,11 +1,17 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-
+import { HttpExceptionFilter } from './middleware/error.middleware';
+import * as Sentry from '@sentry/node';
+import { nodeProfilingIntegration } from '@sentry/profiling-node';
+import {
+  SEAGGER_DOC_DESCIPTION,
+  SWAGGER_DOC_TITLE,
+} from './constants/swagger.constants';
 var admin = require('firebase-admin');
 
 const serviceAccount = JSON.parse(
-  process.env.FIREBASE_SERVICE_ACCOUNT_KEY as string
+  process.env.FIREBASE_SERVICE_ACCOUNT_KEY as string,
 );
 
 admin.initializeApp({
@@ -15,18 +21,21 @@ admin.initializeApp({
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
+  Sentry.init({
+    dsn: process.env.SENTRY_DSN,
+    integrations: [nodeProfilingIntegration()],
+    // Performance Monitoring
+    tracesSampleRate: 1.0, // Capture 100% of the transactions
+    // Set sampling rate for profiling - this is relative to tracesSampleRate
+    profilesSampleRate: 1.0,
+  });
+
+  //Error Middleware handling
+  app.useGlobalFilters(new HttpExceptionFilter());
+
   const options = new DocumentBuilder()
-    .setTitle('EcoEase Street Cleaning API')
-    .setDescription(
-      `This API provides endpoints to manage tasks 
-      for inner-city street cleaning, leveraging innovative 
-      solutions to tackle urban trash accumulation. 
-      Partnered with a food delivery company, EcoEase utilizes 
-      camera-equipped delivery riders to identify areas with high 
-      garbage concentration, allowing efficient assignment of cleaning tasks. 
-      This API facilitates task creation, display, and editing, empowering 
-      workers to contribute to cleaner and healthier urban environments.`,
-    )
+    .setTitle(SWAGGER_DOC_TITLE)
+    .setDescription(SEAGGER_DOC_DESCIPTION)
     .setVersion('1.0')
     .addBearerAuth()
     .build();
