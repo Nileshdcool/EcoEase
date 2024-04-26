@@ -20,7 +20,7 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
-import { authMiddleware } from 'src/middleware/auth.middleware';
+import { authMiddleware } from '../middleware/auth.middleware';
 
 @ApiTags('tasks')
 @Controller('tasks')
