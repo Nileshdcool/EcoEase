@@ -19,9 +19,3 @@ export class HttpExceptionFilter implements ExceptionFilter {
     handleError(response, exception.message, status);
   }
 }
-
-export class NotFoundException extends HttpException {
-  constructor(message: string) {
-    super(message, HttpStatus.NOT_FOUND);
-  }
-}

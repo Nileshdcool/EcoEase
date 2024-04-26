@@ -4,6 +4,7 @@ import { Task } from './task.entity';
 import { ITaskService } from './task.interface';
 import { calculateDistance } from '../utils/distance';
 import { EARTH_RADIUS_KM } from '../constants/tasks.constants';
+import { ApiError } from '../utils/error.util';
 
 @Injectable()
 export class TaskService implements ITaskService {
@@ -14,7 +15,7 @@ export class TaskService implements ITaskService {
       const docRef = await this.db.collection('tasks').add(task);
       return { id: docRef.id, ...task };
     } catch (error) {
-      throw new Error(error);
+      throw new ApiError(error,400);
     }
   }
 
@@ -26,7 +27,7 @@ export class TaskService implements ITaskService {
         ...(doc.data() as Task),
       }));
     } catch (error) {
-      throw new Error(error);
+      throw new ApiError(error,400);
     }
   }
 
@@ -45,7 +46,7 @@ export class TaskService implements ITaskService {
       );
       return nearTasks;
     } catch (error) {
-      throw new Error(error);
+      throw new ApiError(error,400);
     }
   }
 
@@ -54,7 +55,7 @@ export class TaskService implements ITaskService {
       const doc = await this.db.collection('tasks').doc(id).get();
       return { id: doc.id, ...(doc.data() as Task) };
     } catch (error) {
-      throw new Error(error);
+      throw new ApiError(error,400);
     }
   }
 
@@ -65,7 +66,7 @@ export class TaskService implements ITaskService {
       await this.db.collection('tasks').doc(id).update(taskData);
       return { id, ...task };
     } catch (error) {
-      throw new Error(error);
+      throw new ApiError(error,400);
     }
   }
 
@@ -73,7 +74,7 @@ export class TaskService implements ITaskService {
     try {
       await this.db.collection('tasks').doc(id).delete();
     } catch (error) {
-      throw new Error(error);
+      throw new ApiError(error,400);
     }
   }
 }
