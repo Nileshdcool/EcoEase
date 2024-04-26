@@ -41,7 +41,7 @@ import { LATITUDE, LONGITUDE, RADIUS } from '../constants/tasks.constants';
 import { handleSuccess } from '../helpers/api-response-handler';
 
 @ApiTags('tasks')
-@Controller('tasks')
+@Controller('/api/tasks')
 export class TaskController {
   constructor(
     @Inject('TaskService') private readonly taskService: ITaskService,
