@@ -8,7 +8,9 @@ import {
   Delete,
   Inject,
   Query,
+  Res,
 } from '@nestjs/common';
+import { Response } from 'express';
 import { Task } from './task.entity';
 import { ITaskService } from './task.interface';
 import { ApiTags } from '@nestjs/swagger';
@@ -36,6 +38,7 @@ import {
   PUT_SUMMARY,
 } from '../constants/swagger.constants';
 import { LATITUDE, LONGITUDE, RADIUS } from 'src/constants/tasks.constants';
+import { handleSuccess } from '../helpers/api-response-handler';
 
 @ApiTags('tasks')
 @Controller('tasks')
@@ -46,14 +49,16 @@ export class TaskController {
 
   @Post()
   @AuthenticatedApiOperation(CREATE_TASK, RETURN_CREATED_TASK, [], [])
-  async createTask(@Body() task: Task): Promise<Task> {
-    return this.taskService.createTask(task);
+  async createTask(@Res() res: Response, @Body() task: Task) {
+    const data = await this.taskService.createTask(task);
+    return handleSuccess<Task>(res, 'Success message', data);
   }
 
   @Get()
   @AuthenticatedApiOperation(GET_ALL_TASKS, RETURN_OF_TASKS)
-  async getAllTasks(): Promise<Task[]> {
-    return this.taskService.getAllTasks();
+  async getAllTasks(@Res() res: Response) {
+    const data = await this.taskService.getAllTasks();
+    return handleSuccess<Task[]>(res, 'Success message', data);
   }
 
   @Get(NEAR_LOCATION_API)
@@ -63,11 +68,17 @@ export class TaskController {
     NEAR_LOCATION_QUERY_STRING,
   )
   async getTasksNearLocation(
+    @Res() res: Response,
     @Query(LATITUDE) latitude: number,
     @Query(LONGITUDE) longitude: number,
     @Query(RADIUS) radius: number,
-  ): Promise<Task[]> {
-    return this.taskService.getTasksNearLocation(latitude, longitude, radius);
+  ) {
+    const data = await this.taskService.getTasksNearLocation(
+      latitude,
+      longitude,
+      radius,
+    );
+    return handleSuccess<Task[]>(res, 'Success message', data);
   }
 
   @Get(':id')
@@ -83,9 +94,11 @@ export class TaskController {
     ],
   )
   async getTaskById(
+    @Res() res: Response,
     @Param(GET_TASK_BY_ID_PARAM_NAME) id: string,
-  ): Promise<Task> {
-    return this.taskService.getTaskById(id);
+  ) {
+    const data = await this.taskService.getTaskById(id);
+    return handleSuccess<Task>(res, 'Success message', data);
   }
 
   @Put(':id')
@@ -96,10 +109,12 @@ export class TaskController {
     [{ name: PUT_PARAM_NAME, description: PUT_PARAM_DESCRIPTION }],
   )
   async updateTask(
+    @Res() res: Response,
     @Param(PUT_PARAM_NAME) id: string,
     @Body() task: Task,
-  ): Promise<Task> {
-    return this.taskService.updateTask(id, task);
+  ) {
+    const data = await this.taskService.updateTask(id, task);
+    return handleSuccess<Task>(res, 'Success message', data);
   }
 
   @Delete(':id')
@@ -109,7 +124,8 @@ export class TaskController {
     [],
     [{ name: DELETE_PARAM_NAME, description: DELETE_PARAM_DESCRIPTION }],
   )
-  async deleteTask(@Param(DELETE_PARAM_NAME) id: string): Promise<void> {
-    return this.taskService.deleteTask(id);
+  async deleteTask(@Res() res: Response, @Param(DELETE_PARAM_NAME) id: string) {
+    await this.taskService.deleteTask(id);
+    return handleSuccess<Task>(res, 'Success message', null);
   }
 }

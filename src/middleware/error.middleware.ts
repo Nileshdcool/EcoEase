@@ -24,7 +24,6 @@ export class HttpExceptionFilter implements ExceptionFilter {
     };
     
     response.status(status).json(errorObject);
-
     Sentry.captureException(errorObject);
   }
 }
