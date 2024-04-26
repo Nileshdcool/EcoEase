@@ -30,4 +30,7 @@ export class Task {
   @ApiProperty()
   @ValidateNested()
   location: Location;
+
+  @ApiProperty()
+  status: string;
 }
