@@ -29,6 +29,14 @@ describe('TaskController', () => {
     taskService = module.get<ITaskService>('TaskService');
   });
 
+  it('should return an array of tasks', async () => {
+    const tasks: Task[] = [];
+    jest.spyOn(taskService, 'getAllTasks').mockResolvedValue(tasks);
+    const result = await controller.getAllTasks();
+    expect(result).toEqual(tasks);
+    expect(taskService.getAllTasks).toHaveBeenCalled();
+  });
+
   it('should create a task', async () => {
     const newTask: Task = {
       id: 'GHAQ0001',
