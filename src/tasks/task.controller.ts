@@ -35,6 +35,7 @@ import {
   PUT_PARAM_NAME,
   PUT_SUMMARY,
 } from '../constants/swagger.constants';
+import { LATITUDE, LONGITUDE, RADIUS } from 'src/constants/tasks.constants';
 
 @ApiTags('tasks')
 @Controller('tasks')
@@ -62,9 +63,9 @@ export class TaskController {
     NEAR_LOCATION_QUERY_STRING,
   )
   async getTasksNearLocation(
-    @Query('latitude') latitude: number,
-    @Query('longitude') longitude: number,
-    @Query('radius') radius: number,
+    @Query(LATITUDE) latitude: number,
+    @Query(LONGITUDE) longitude: number,
+    @Query(RADIUS) radius: number,
   ): Promise<Task[]> {
     return this.taskService.getTasksNearLocation(latitude, longitude, radius);
   }
