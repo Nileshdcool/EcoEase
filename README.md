@@ -40,7 +40,7 @@ Authorization: secretkey
 ### Get Tasks Near Area
 
 ```
-GET /tasks/nearby?latitude={latitude}&longitude={longitude}&radius={radius}
+GET /api/tasks/nearby?latitude={latitude}&longitude={longitude}&radius={radius}
 ```
 
 This endpoint retrieves all tasks near a specified area on the map.
@@ -58,15 +58,17 @@ This endpoint retrieves all tasks near a specified area on the map.
   {
     "id": 1,
     "description": "Collect trash at corner of Main St and Elm St",
+    "workerId": 12,
     "location":{"latitude": 37.7749,
     "longitude": -122.4194},
     "status": "pending"
   },
   {
     "id": 2,
+    "workerId": 13,
     "description": "Remove garbage bags near City Park",
     "location":{"latitude": 37.7662,
-    "longitude": -122.4761,}
+    "longitude": -122.4761,},
     "status": "completed"
   }
 ]
@@ -75,7 +77,7 @@ This endpoint retrieves all tasks near a specified area on the map.
 ### Create Task
 
 ```
-POST /tasks
+POST /api/tasks
 ```
 
 This endpoint creates a new task.
@@ -84,9 +86,11 @@ This endpoint creates a new task.
 
 ```json
 {
-  "description": "Collect trash near the subway station",
-  "latitude": 37.7833,
-  "longitude": -122.4167
+    "workerId": 13,
+    "description": "Remove garbage bags near City Park",
+    "location":{"latitude": 37.7662,
+    "longitude": -122.4761,},
+    "status": "completed"
 }
 ```
 
@@ -95,17 +99,18 @@ This endpoint creates a new task.
 ```json
 {
   "id": 3,
-  "description": "Collect trash near the subway station",
-  "location":{"latitude": 37.7833,
-  "longitude": -122.4167},
-  "status": "pending"
+  "workerId": 13,
+    "description": "Remove garbage bags near City Park",
+    "location":{"latitude": 37.7662,
+    "longitude": -122.4761,},
+    "status": "completed"
 }
 ```
 
 ### Get Task by ID
 
 ```
-GET /tasks/{taskId}
+GET /api/tasks/{taskId}
 ```
 
 This endpoint retrieves a specific task by its ID.
@@ -115,17 +120,18 @@ This endpoint retrieves a specific task by its ID.
 ```json
 {
   "id": 3,
-  "description": "Collect trash near the subway station",
-   "location":{"latitude": 37.7833,
-  "longitude": -122.4167},
-  "status": "pending"
+  "workerId": 13,
+    "description": "Remove garbage bags near City Park",
+    "location":{"latitude": 37.7662,
+    "longitude": -122.4761,},
+    "status": "completed"
 }
 ```
 
 ### Update Task
 
 ```
-PUT /tasks/{taskId}
+PUT /api/tasks/{taskId}
 ```
 
 This endpoint updates an existing task.
@@ -144,17 +150,18 @@ This endpoint updates an existing task.
 ```json
 {
   "id": 3,
-  "description": "Collect trash near the subway station entrance",
-   "location":{"latitude": 37.7833,
-  "longitude": -122.4167},
-  "status": "completed"
+  "workerId": 13,
+    "description": "Remove garbage bags near City Park",
+    "location":{"latitude": 37.7662,
+    "longitude": -122.4761,},
+    "status": "completed"
 }
 ```
 
 ### Delete Task
 
 ```
-DELETE /tasks/{taskId}
+DELETE /api/tasks/{taskId}
 ```
 
 This endpoint deletes a task by its ID.
@@ -172,21 +179,23 @@ Status: 204 No Content
 
 ```bash
 curl -X GET \
-  'https://api.ecoease.com/tasks/nearby?latitude=37.7749&longitude=-122.4194&radius=1000' \
-  -H 'Authorization: Bearer YOUR_API_KEY'
+  'https://api.ecoease.com/api/tasks/nearby?latitude=37.7749&longitude=-122.4194&radius=1000' \
+  -H 'Authorization: YOUR_API_KEY'
 ```
 
 ### Create Task
 
 ```bash
 curl -X POST \
-  https://api.ecoease.com/tasks \
+  https://api.ecoease.com/api/tasks \
   -H 'Authorization: Bearer YOUR_API_KEY' \
   -H 'Content-Type: application/json' \
   -d '{
-	"description": "Collect trash near the subway station",
-	 "location":{"latitude": 37.7833,
-    "longitude": -122.4167},
+	"workerId": 13,
+    "description": "Remove garbage bags near City Park",
+    "location":{"latitude": 37.7662,
+    "longitude": -122.4761,},
+    "status": "completed"
 }'
 ```
 
