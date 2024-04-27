@@ -11,7 +11,6 @@ import {
   Res,
 } from '@nestjs/common';
 import { Response } from 'express';
-import { Task } from './task.entity';
 import { ITaskService } from './task.interface';
 import { ApiTags } from '@nestjs/swagger';
 import { AuthenticatedApiOperation } from '../factories/secured-api-decorators';
@@ -39,6 +38,14 @@ import {
 } from '../constants/swagger.constants';
 import { LATITUDE, LONGITUDE, RADIUS } from '../constants/tasks.constants';
 import { handleSuccess } from '../helpers/api-response-handler';
+import {
+  TASKS_RETRIVED_SUCCESSFULLY,
+  TASK_CREATED_SUCCESSFULLY,
+  TASK_DELETED_SUCCESSFULLY,
+  TASK_RETRIVED_SUCCESSFULL,
+  TASK_UPDATED_SUCCESSFULLY,
+} from '../constants/messages.constants';
+import { Task } from '../types/task.entity';
 
 @ApiTags('tasks')
 @Controller('/api/tasks')
@@ -51,14 +58,14 @@ export class TaskController {
   @AuthenticatedApiOperation(GET_ALL_TASKS, RETURN_OF_TASKS)
   async getAllTasks(@Res() res: Response) {
     const data = await this.taskService.getAllTasks();
-    return handleSuccess<Task[]>(res, 'Tasks retrieved successfully', data);
+    return handleSuccess<Task[]>(res, TASKS_RETRIVED_SUCCESSFULLY, data);
   }
 
   @Post()
   @AuthenticatedApiOperation(CREATE_TASK, RETURN_CREATED_TASK, [], [])
   async createTask(@Res() res: Response, @Body() task: Task) {
     const data = await this.taskService.createTask(task);
-    return handleSuccess<Task>(res, 'Task created successfully', data);
+    return handleSuccess<Task>(res, TASK_CREATED_SUCCESSFULLY, data);
   }
 
   @Get(NEAR_LOCATION_API)
@@ -78,7 +85,7 @@ export class TaskController {
       longitude,
       radius,
     );
-    return handleSuccess<Task[]>(res, 'Tasks retrieved successfully', data);
+    return handleSuccess<Task[]>(res, TASKS_RETRIVED_SUCCESSFULLY, data);
   }
 
   @Get(':id')
@@ -98,7 +105,7 @@ export class TaskController {
     @Param(GET_TASK_BY_ID_PARAM_NAME) id: string,
   ) {
     const data = await this.taskService.getTaskById(id);
-    return handleSuccess<Task>(res, 'Task retrieved successfully', data);
+    return handleSuccess<Task>(res, TASK_RETRIVED_SUCCESSFULL, data);
   }
 
   @Put(':id')
@@ -114,7 +121,7 @@ export class TaskController {
     @Body() task: Task,
   ) {
     const data = await this.taskService.updateTask(id, task);
-    return handleSuccess<Task>(res, 'Task updated successfully', data);
+    return handleSuccess<Task>(res, TASK_UPDATED_SUCCESSFULLY, data);
   }
 
   @Delete(':id')
@@ -126,6 +133,6 @@ export class TaskController {
   )
   async deleteTask(@Res() res: Response, @Param(DELETE_PARAM_NAME) id: string) {
     await this.taskService.deleteTask(id);
-    return handleSuccess<Task>(res, 'Tasks deleted successfully', null);
+    return handleSuccess<Task>(res, TASK_DELETED_SUCCESSFULLY, null);
   }
 }
