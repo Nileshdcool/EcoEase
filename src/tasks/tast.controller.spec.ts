@@ -4,7 +4,7 @@ import { ITaskService } from './task.interface';
 import { Response } from 'express';
 import { Task } from '../types/task.entity';
 import { Status } from '../enums/status.enum';
-import { TASKS_RETRIVED_SUCCESSFULLY } from '../constants/messages.constants';
+import { TASKS_RETRIVED_SUCCESSFULLY, TASK_CREATED_SUCCESSFULLY } from '../constants/messages.constants';
 
 describe('TaskController', () => {
   let controller: TaskController;
@@ -72,7 +72,7 @@ describe('TaskController', () => {
   });
 
   it('should create a new task', async () => {
-    const mockTask = {
+    const mockTask : Task = {
       id: '1',
       description: 'Collect trash at corner of Main St and Elm St',
       location: { latitude: 37.7749, longitude: -122.4194 },
@@ -80,7 +80,7 @@ describe('TaskController', () => {
       workerId: 12,
     };
     
-    (taskService.createTask as jest.Mock).mockRejectedValueOnce(mockTask);
+    (taskService.createTask as jest.Mock).mockResolvedValueOnce(mockTask);
     const mockResponse = {
       status: jest.fn().mockReturnThis(),
       json: jest.fn(),
@@ -91,7 +91,7 @@ describe('TaskController', () => {
     expect(taskService.createTask).toHaveBeenCalledWith(mockTask);
     expect(mockResponse.status).toHaveBeenCalledWith(200);
     expect(mockResponse.json).toHaveBeenCalledWith({
-      message: 'Task created successfully',
+      message: TASK_CREATED_SUCCESSFULLY,
       data: mockTask,
       success: true
     });
