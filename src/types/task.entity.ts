@@ -3,24 +3,19 @@ import {
   IsString,
   IsNotEmpty,
   ValidateNested,
-  IsLatitude,
-  IsLongitude,
+  IsNumber,
 } from 'class-validator';
-
-export class Location {
-  @ApiProperty()
-  @IsLatitude()
-  latitude: number;
-
-  @ApiProperty()
-  @IsLongitude()
-  longitude: number;
-}
+import { Status } from '../enums/status.enum';
+import {Location} from '../types/location.entity';
 
 export class Task {
   @ApiProperty()
   @IsString()
   id: string;
+
+  @ApiProperty()
+  @IsNumber()
+  workerId: number;
 
   @ApiProperty()
   @IsString()
@@ -32,5 +27,5 @@ export class Task {
   location: Location;
 
   @ApiProperty()
-  status: string;
+  status: Status;
 }

@@ -1,4 +1,4 @@
-import { Task } from './task.entity';
+import { Task } from "../types/task.entity";
 
 export interface ITaskService {
   createTask(task: Task): Promise<Task>;

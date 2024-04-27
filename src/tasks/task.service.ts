@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import * as admin from 'firebase-admin';
-import { Task } from './task.entity';
 import { ITaskService } from './task.interface';
 import { calculateDistance } from '../utils/distance';
 import { EARTH_RADIUS_KM } from '../constants/tasks.constants';
 import { ApiError } from '../utils/error.util';
+import { Task } from '../types/task.entity';
 
 @Injectable()
 export class TaskService implements ITaskService {

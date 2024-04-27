@@ -1,13 +1,14 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { TaskController } from './task.controller';
 import { ITaskService } from './task.interface';
-import { Task } from './task.entity';
 import { Response } from 'express';
+import { Task } from '../types/task.entity';
+import { Status } from '../enums/status.enum';
+import { TASKS_RETRIVED_SUCCESSFULLY, TASK_CREATED_SUCCESSFULLY } from '../constants/messages.constants';
 
 describe('TaskController', () => {
   let controller: TaskController;
   let taskService: ITaskService;
-  let res: Response;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -31,29 +32,68 @@ describe('TaskController', () => {
     taskService = module.get<ITaskService>('TaskService');
   });
 
-  it('should return an array of tasks', async () => {
-    const tasks: Task[] = [];
-    jest.spyOn(taskService, 'getAllTasks').mockResolvedValue(tasks);
-    const result = await controller.getAllTasks(res);
-    expect(result).toEqual(tasks);
-    expect(taskService.getAllTasks).toHaveBeenCalled();
+  afterEach(() => {
+    jest.clearAllMocks();
   });
 
-  it('should create a task', async () => {
-    const newTask: Task = {
-      id: '1',
-      description: 'Collect trash at corner of Main St and Elm St',
-      location: { latitude: 37.7749, longitude: -122.4194 },
-      status: 'pending',
-    };
-    const createdTask: Task = {
-      id: '1',
-      description: 'Collect trash at corner of Main St and Elm St',
-      location: { latitude: 37.7749, longitude: -122.4194 },
-      status: 'pending',
-    };
-    jest.spyOn(taskService, 'createTask').mockResolvedValue(createdTask);
-    const result = await controller.createTask(res,newTask);
-    expect(result).toEqual(createdTask);
+  it('should return an array of tasks', async () => {
+    const mockTasks: Task[] = [
+      {
+        id: '1',
+        description: 'Collect trash at corner of Main St and Elm St',
+        location: { latitude: 37.7749, longitude: -122.4194 },
+        status: Status.Pending,
+        workerId: 12,
+      },
+      {
+        id: '2',
+        description: 'Collect trash at corner of Main St and Elm St',
+        location: { latitude: 37.7749, longitude: -122.4194 },
+        status: Status.Pending,
+        workerId: 12,
+      },
+    ];
+    (taskService.getAllTasks as jest.Mock).mockResolvedValueOnce(mockTasks);
+
+    const mockResponse = {
+      status: jest.fn().mockReturnThis(),
+      json: jest.fn(),
+    } as unknown as Response;
+
+    await controller.getAllTasks(mockResponse);
+
+    expect(taskService.getAllTasks).toHaveBeenCalled();
+    expect(mockResponse.status).toHaveBeenCalledWith(200);
+    expect(mockResponse.json).toHaveBeenCalledWith({
+      message: TASKS_RETRIVED_SUCCESSFULLY,
+      data: mockTasks,
+      success: true,
+    });
   });
+
+  it('should create a new task', async () => {
+    const mockTask : Task = {
+      id: '1',
+      description: 'Collect trash at corner of Main St and Elm St',
+      location: { latitude: 37.7749, longitude: -122.4194 },
+      status: Status.Pending,
+      workerId: 12,
+    };
+    
+    (taskService.createTask as jest.Mock).mockResolvedValueOnce(mockTask);
+    const mockResponse = {
+      status: jest.fn().mockReturnThis(),
+      json: jest.fn(),
+    } as unknown as Response;
+
+    await controller.createTask(mockResponse, mockTask);
+
+    expect(taskService.createTask).toHaveBeenCalledWith(mockTask);
+    expect(mockResponse.status).toHaveBeenCalledWith(200);
+    expect(mockResponse.json).toHaveBeenCalledWith({
+      message: TASK_CREATED_SUCCESSFULLY,
+      data: mockTask,
+      success: true
+    });
+  })
 });
